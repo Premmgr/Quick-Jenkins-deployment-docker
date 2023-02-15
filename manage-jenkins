@@ -4,7 +4,7 @@ GREEN="\e[32m"
 YELLOW="\e[33m"
 EC="\e[0m"
 DATE="$(date +'%d-%m-%Y')"
-source util-script
+source utilscript
 
 case $1 in 
 	"start")
@@ -26,6 +26,7 @@ case $1 in
 		printf "jenkins: \t" ; ${f_jenkins_state} && printf "${GREEN}running${EC}\n" || printf "${RED}not running${EC}\n" 
 	;;
 	"logs")
+	docker logs -f jenkins
 
 	;;
 *)
