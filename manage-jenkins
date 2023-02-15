@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+EC="\e[0m"
+DATE="$(date +'%d-%m-%Y')"
+source util-script
+
+case $1 in 
+	"start")
+		mkdir logs &> /dev/null
+		mkdir jenkins &> /dev/null
+		${f_start_jenkins}
+		docker logs -f jennkins &> logs/jenkins-${DATE}.log &
+	;;
+	"stop")
+		printf "stopping jenkins: "
+		${f_stop_jenkins} ; sleep 0.05 && printf "${GREEN}OK${EC}\n" ; exit 0 || printf "${RED}FAILED${EC}\n" ; exit 1
+	;;
+	"backup")
+		printf "creating backup for jenkins: "
+		tar -czf backup-jenkins-${DATE}.tar.gz jenkins ; sleep 0.05 && printf "${GREEN}OK${EC}\n" ; exit 0 || printf "${RED}FAILEDi${EC}\n" ;  exit 1
+	;;
+	"status")
+		printf "${YELLOW}service\t\tstate\n${EC}\n"
+		printf "jenkins: \t" ; ${f_jenkins_state} && printf "${GREEN}running${EC}\n" || printf "${RED}not running${EC}\n" 
+	;;
+	"logs")
+
+	;;
+*)
+	printf "invalid command, try start or stop\n"
+esac

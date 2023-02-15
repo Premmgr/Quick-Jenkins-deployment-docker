@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+CHECK_jenkins=$(docker ps | grep jenkins)
+
+start_jenkins(){
+	if	[[ ${CHECK_jenkins} ]]
+	then
+		echo -e "\e[32mjenkins is alreay runnning\e[0m" && printf "root password: "${GREEN}"$(docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)"${EC}"\n" ; exit 1
+	else
+		echo -e "\e[32mstarting jenkins..\e[0m"
+		docker run -d -p 800:8080 -v $(pwd)/jenkins:/var/jenkins_home --rm --name jenkins jenkins/jenkins:lts && \
+		printf "root password: "${GREEN}"$(docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)"${EC}"\n"
+	fi
+}
+f_start_jenkins=start_jenkins
+
+
+stop_jenkins(){
+	docker stop jenkins &> /dev/null
+}
+f_stop_jenkins=stop_jenkins
+
+jenkins_state(){
+	docker ps | grep jenkins &> /dev/null
+}
+f_jenkins_state=jenkins_state
