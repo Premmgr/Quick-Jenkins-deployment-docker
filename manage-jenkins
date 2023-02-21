@@ -6,16 +6,19 @@ EC="\e[0m"
 DATE="$(date +'%d-%m-%Y')"
 source utilscript
 
+jenkins_port="800"
+jenkins_version="lts"
+
 case $1 in 
 	"start")
 		mkdir logs &> /dev/null
 		mkdir jenkins &> /dev/null
 		${f_start_jenkins}
-		docker logs -f jennkins &> logs/jenkins-${DATE}.log &
+		docker logs -f jenkins &> logs/jenkins-${DATE}.log &
 	;;
 	"stop")
 		printf "stopping jenkins: "
-		${f_stop_jenkins} ; sleep 0.05 && printf "${GREEN}OK${EC}\n" ; exit 0 || printf "${RED}FAILED${EC}\n" ; exit 1
+		${f_stop_jenkins} &> /dev/null && printf "${GREEN}ok${EC}\n" || printf "${RED}failed${EC}\n"
 	;;
 	"backup")
 		printf "creating backup for jenkins: "
@@ -30,5 +33,5 @@ case $1 in
 
 	;;
 *)
-	printf "invalid command, try start or stop\n"
+	printf "invalid command, try start, stop, backup or status\n"
 esac
